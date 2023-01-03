@@ -21,10 +21,12 @@ nets = {
 
 # Init is ran on server startup
 # Load your model to GPU as a global variable here using the variable name "model"
+
+
 def init():
 
     # needed for bananna optimizations
-    # global model
+    global model
 
     global models
     global face_enhancer
@@ -225,7 +227,8 @@ def inference(all_inputs: dict) -> dict:
             img, has_aligned=False, only_center_face=False, paste_back=True
         )
     else:
-        output, _rgb = upsampler.enhance(img, outscale=4)  # TODO outscale param
+        output, _rgb = upsampler.enhance(
+            img, outscale=4)  # TODO outscale param
 
     image_base64 = base64.b64encode(cv2.imencode(".jpg", output)[1]).decode()
 
