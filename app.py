@@ -48,20 +48,20 @@ def init():
     models = upsamplers
     for model_key in models:
         print("Init " + model_key)
-        model = models[model_key]
-        modelModel = nets[model["net"]](**model["initArgs"])
-        opt_path = "opt_" + model["path"]
+        _model = models[model_key]
+        modelModel = nets[_model["net"]](**_model["initArgs"])
+        opt_path = "opt_" + _model["path"]
         if not os.path.exists(opt_path):
             os.makedirs("opt_weights", exist_ok=True)
             print(
                 "Optimizing "
-                + model["path"]
-                + " {:,} bytes".format(os.path.getsize(model["path"]))
+                + _model["path"]
+                + " {:,} bytes".format(os.path.getsize(_model["path"]))
             )
             t = time.time()
             upsampler = RealESRGANer(
                 scale=model["netscale"],
-                model_path=model["path"],
+                model_path=_model["path"],
                 dni_weight=None,
                 model=modelModel,
                 tile=0,
@@ -76,12 +76,12 @@ def init():
             # model_scripted = torch.jit.script(upsampler.model)
             torch.save({"params": upsampler.model.state_dict()}, opt_path)
             print("Optimized: {:,} bytes".format(os.path.getsize(opt_path)))
-            os.remove(model["path"])
+            os.remove(_model["path"])
 
         t = time.time()
-        print("Loading " + model["name"])
+        print("Loading " + _model["name"])
         upsampler = RealESRGANer(
-            scale=model["netscale"],
+            scale=_model["netscale"],
             model_path=opt_path,
             dni_weight=None,
             model=modelModel,
@@ -93,7 +93,7 @@ def init():
         print("Load time: {:.2f} s".format(time.time() - t))
         print()
 
-        model.update(
+        _model.update(
             {
                 "model": modelModel,
                 "upsampler": upsampler,
