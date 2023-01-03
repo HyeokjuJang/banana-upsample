@@ -162,12 +162,12 @@ def truncateInputs(inputs: dict):
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
 def inference(all_inputs: dict) -> dict:
-    # global model
+    global model
     global models
 
     # use optimized version
     global face_enhancer
-    # face_enhancer = model
+    face_enhancer = model
 
     print(json.dumps(truncateInputs(all_inputs), indent=2))
     model_inputs = all_inputs.get("modelInputs", None)
